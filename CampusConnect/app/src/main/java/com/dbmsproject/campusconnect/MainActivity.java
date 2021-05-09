@@ -23,5 +23,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(it);
             }
         });
+        btn_admin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it = new Intent(getApplicationContext(),AdminLogin.class);
+                startActivity(it);
+                
+            }
+        });
     }
 }
