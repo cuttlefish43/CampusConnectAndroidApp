@@ -9,10 +9,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CampusConnect">
-        <activity android:name=".addNewCourse"
+        <activity android:name=".FacultyDashboard"></activity>
+        <activity android:name=".StudentDashBoard" />
+        <activity
+            android:name=".UserCourseReg"
+            android:label="Register Course"
+            android:theme="@android:style/Theme.Holo.Light.Dialog" />
+        <activity
+            android:name=".addNewCourse"
             android:label="Add New Course"
-            android:theme="@android:style/Theme.Dialog"
-            />
+            android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".AdminDashboard" />
         <activity
             android:name=".AdminLogin"

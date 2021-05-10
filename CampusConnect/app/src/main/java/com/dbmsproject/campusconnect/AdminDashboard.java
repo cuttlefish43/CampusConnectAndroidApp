@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -40,13 +41,17 @@ public class AdminDashboard extends AppCompatActivity {
             public void onClick(View v) {
                 DatabaseHelper dbhelper= new DatabaseHelper(getApplicationContext());
                 List<OCourses> courseslist= dbhelper.getAllCourses();
-                ArrayAdapter useradapter= new ArrayAdapter<OCourses>(AdminDashboard.this,android.R.layout.simple_expandable_list_item_1,courseslist);
-                lv_items.setAdapter(useradapter);
+                ArrayAdapter coursesadapter= new ArrayAdapter<OCourses>(AdminDashboard.this,android.R.layout.simple_expandable_list_item_1,courseslist);
+                lv_items.setAdapter(coursesadapter);
             }
         });
         btn_ad_apv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DatabaseHelper dbhelper= new DatabaseHelper(getApplicationContext());
+                List<Ousers> usersList= dbhelper.getAllApprovals();
+                ArrayAdapter useradapter= new ArrayAdapter<Ousers>(AdminDashboard.this,android.R.layout.simple_list_item_activated_1, usersList);
+                lv_items.setAdapter(useradapter);
 
             }
         });

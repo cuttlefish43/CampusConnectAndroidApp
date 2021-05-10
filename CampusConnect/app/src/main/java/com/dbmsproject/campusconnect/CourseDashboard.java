@@ -5,12 +5,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CourseDashboard extends AppCompatActivity {
@@ -39,7 +36,7 @@ public class CourseDashboard extends AppCompatActivity {
             List<OCourses> CoursesList = dbhelper.getAllCourses();
             System.out.println(CoursesList.size());
             //Toast.makeText(this, CoursesList.size(), Toast.LENGTH_SHORT).show();
-            myAdapter = new RvAdapter(CoursesList); //has parameter - a list, eg: MyAdapter(numberList);
+            myAdapter = new RvAdapter(CoursesList,currentUser); //has parameter - a list, eg: MyAdapter(numberList);
             recyclerView.setAdapter(myAdapter);
         }catch (Exception e){
             System.out.println("receive error ");
@@ -52,7 +49,7 @@ public class CourseDashboard extends AppCompatActivity {
                     List<OCourses> CoursesList = dbhelper.getRegCourses( currentUser.id); // registered courses for current id
                     System.out.println(CoursesList.size());
                     //Toast.makeText(this, CoursesList.size(), Toast.LENGTH_SHORT).show();
-                    myAdapter = new RvAdapter(CoursesList); //has parameter - a list, eg: MyAdapter(numberList);
+                    myAdapter = new RvAdapter(CoursesList, currentUser); //has parameter - a list, eg: MyAdapter(numberList);
                     recyclerView.setAdapter(myAdapter);
                 }catch (Exception e){
                     System.out.println("receive error ");
@@ -68,7 +65,7 @@ public class CourseDashboard extends AppCompatActivity {
                     List<OCourses> CoursesList = dbhelper.getAllCourses();
                     System.out.println(CoursesList.size());
                     //Toast.makeText(this, CoursesList.size(), Toast.LENGTH_SHORT).show();
-                    myAdapter = new RvAdapter(CoursesList); //has parameter - a list, eg: MyAdapter(numberList);
+                    myAdapter = new RvAdapter(CoursesList, currentUser); //has parameter - a list, eg: MyAdapter(numberList);
                     recyclerView.setAdapter(myAdapter);
                 }catch (Exception e){
                     System.out.println("receive error ");

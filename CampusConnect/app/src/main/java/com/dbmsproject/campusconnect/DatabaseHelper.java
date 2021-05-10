@@ -21,7 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        sqlstatment = "create table if not exists usertable(id integer primary key autoincrement, username varchar(40),useremail varchar(30),userpassword varchar(20),isstudent integer,isfaculty integer)";
+        sqlstatment = "create table if not exists usertable(id integer primary key autoincrement, username varchar(40),useremail varchar(30),userpassword varchar(20))";
         db.execSQL(sqlstatment);
         //sqlstatment = "create table if not exists faculty(id integer primary key autoincrement, facultyname varchar(40),facultyemail varchar(30),facultypassword varchar(20))";
         //db.execSQL(sqlstatment);
@@ -140,7 +140,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db;
         db= this.getReadableDatabase();
         //student table check
-        String sqlstatment2 ="select * from studenttocourses where studentid = \""+sid+"\"";
+        String sqlstatment2 ="select * from courses where id in (select courseid from studenttocourses where studentid = \""+sid+"\")";
         Cursor cursor;
         cursor=db.rawQuery(sqlstatment2,null);
         if(cursor.moveToFirst()){
@@ -154,7 +154,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         //faculty table check
-        sqlstatment2="select * from facultytocourses where facultyid = \""+sid+"\"";
+        sqlstatment2="select * from courses where id in (select courseid from facultytocourses where facultyid = \""+sid+"\")";
         cursor=db.rawQuery(sqlstatment2,null);
         if(cursor.moveToFirst()){
             do {
@@ -184,9 +184,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 int id = cursor.getInt(0);
                 String name= cursor.getString(1);
                 String email= cursor.getString(2);
-                int isstudent=cursor.getInt(4);
-                int isfaculty=cursor.getInt(5);
-                Ousers ouser= new Ousers(id,name,email,isstudent,isfaculty);
+
+                Ousers ouser= new Ousers(id,name,email);
                 retList.add(ouser);
             }while(cursor.moveToNext());
         }
@@ -236,4 +235,106 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public int checkStudenttoCourse(int uid, int cid) {
+        SQLiteDatabase db;
+        db= this.getReadableDatabase();
+        String sqlstatment5="select count(*) from studenttocourses where studentid = \"" + uid + "\" and courseid = \"" + cid + "\"";
+        Cursor cu;
+        int count=0;
+        cu= db.rawQuery(sqlstatment5,null);
+        if(cu.moveToFirst()){
+            count=cu.getInt(0);
+            System.out.println("This is studenttocourse count"+count);
+            cu.close();
+            db.close();
+
+            if(count >=1){
+                return 1; //user is registered as student
+            }else{
+                return -1;
+            }
+        }else{
+            cu.close();
+            db.close();
+            return 0;
+        }
+    }
+
+    public int checkFacultytoCourse(int userid, int courseid) {
+        SQLiteDatabase db;
+        db= this.getReadableDatabase();
+        String sqlstatment5="select count(*) from facultytocourses where facultyid = \"" + userid + "\" and courseid = \"" + courseid + "\"";
+        Cursor cu;
+        int count=0;
+        cu= db.rawQuery(sqlstatment5,null);
+        if(cu.moveToFirst()){
+            count=cu.getInt(0);
+            System.out.println("This is studenttocourse count"+count);
+            cu.close();
+            db.close();
+
+            if(count >=1){
+                return 1; //user is registered as faculty
+            }else{
+                return -1;
+            }
+        }else{
+            cu.close();
+            db.close();
+            return 0;
+        }
+    }
+
+    public int registerFaculty(int userid, int courseid) {
+        SQLiteDatabase db;
+        db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("facultyid", userid);
+        cv.put("courseid", courseid);
+        long status=db.insert("approvals",null,cv);
+        db.close();
+        if(status > 0){
+            return 1;
+        }else{
+            return -1;
+        }
+
+    }
+
+    public int registerStudent(int userid, int courseid) {
+        SQLiteDatabase db;
+        db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("studentid", userid);
+        cv.put("courseid", courseid);
+        long status=db.insert("studenttocourses",null,cv);
+        db.close();
+        if(status > 0){
+            return 1;
+        }else{
+            return -1;
+        }
+    }
+
+    public List<Ousers> getAllApprovals() {
+        List<Ousers> pendingList=new ArrayList<>();
+        SQLiteDatabase db;
+        db =this. getReadableDatabase();
+        Cursor cursor;
+        String sqlstatment6="select * from usertable where id in (select facultyid from approvals)";
+        cursor=db.rawQuery(sqlstatment6,null);
+        if(cursor.moveToFirst()){
+            do{
+                int id = cursor.getInt(0);
+                String name= cursor.getString(1);
+                String email= cursor.getString(2);
+
+                Ousers ouser= new Ousers(id,name,email);
+                pendingList.add(ouser);
+
+            }while(cursor.moveToNext());
+
+        }
+        return pendingList;
+    }
 }
