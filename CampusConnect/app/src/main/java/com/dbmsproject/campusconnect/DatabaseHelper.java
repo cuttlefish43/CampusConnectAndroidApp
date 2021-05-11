@@ -341,20 +341,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<Ousers> getAllApprovals() {
-        List<Ousers> pendingList=new ArrayList<>();
+    public List<Approval> getAllApprovals() {
+        List<Approval> pendingList=new ArrayList<>();
         SQLiteDatabase db;
         db =this. getReadableDatabase();
         Cursor cursor;
-        String sqlstatment6="select * from usertable where id in (select facultyid from approvals)";
+        String sqlstatment6="select usertable.id,usertable.username,courses.id,courses.coursename from approvals join usertable  on approvals.facultyid = usertable.id join courses on approvals.courseid = courses.id";
         cursor=db.rawQuery(sqlstatment6,null);
         if(cursor.moveToFirst()){
             do{
-                int id = cursor.getInt(0);
-                String name= cursor.getString(1);
-                String email= cursor.getString(2);
+                int userid = cursor.getInt(0);
+                String username= cursor.getString(1);
+                int courseid= cursor.getInt(2);
+                String coursename= cursor.getString(3);
 
-                Ousers ouser= new Ousers(id,name,email);
+                Approval ouser= new Approval(userid,courseid,username,coursename);
                 pendingList.add(ouser);
 
             }while(cursor.moveToNext());
@@ -447,6 +448,125 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put("courseid",courseid);
         cv.put("filelinks",uploads);
         long status= db.insert("materials",null,cv);
+        db.close();
+        if(status > 0){
+            return 1;
+        }else{
+            return -1;
+        }
+    }
+
+    public List<Ousers> allUsersforAdmin() {
+        List<Ousers> retList= new ArrayList<>();
+        SQLiteDatabase db;
+        db= this.getReadableDatabase();
+        String sqlstatment3 = "select * from usertable";
+        Cursor cursor;
+        cursor =db.rawQuery(sqlstatment3,null);
+        if(cursor.moveToFirst()){
+            do{
+                int id = cursor.getInt(0);
+                String name= cursor.getString(1);
+                String email= cursor.getString(2);
+                //String combined= "Name: "+name+" \nEmail"+email;
+                Ousers obj= new Ousers(id,name,email);
+                retList.add(obj);
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return retList;
+        
+    }
+
+    public List<OCourses> allCoursesforAdmin() {
+        List<OCourses> retList= new ArrayList<>();
+        SQLiteDatabase db;
+        db= this.getReadableDatabase();
+        String sqlstatment3 = "select * from courses";
+        Cursor cursor;
+        cursor =db.rawQuery(sqlstatment3,null);
+        if(cursor.moveToFirst()){
+            do{
+                int id = cursor.getInt(0);
+                String name= cursor.getString(1);
+                String descript = cursor.getString(2);
+                OCourses obj= new OCourses(id,name,descript);
+                retList.add(obj);
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return retList;
+    }
+
+    public int deleteUser(int id) {
+        SQLiteDatabase db;
+        db = this.getWritableDatabase();
+        long status= db.delete("usertable","id= \""+id+"\"", null);
+        db.close();
+        if(status > 0){
+            return 1;
+        }else{
+            return -1;
+        }
+        
+    }
+
+    public int rejectFaculty(int userid, int courseid) {
+        SQLiteDatabase db;
+        db = this.getWritableDatabase();
+        
+        long status= db.delete("approvals","facultyid= \""+userid+"\" and courseid= \""+courseid+"\"", null);
+        db.close();
+        if(status > 0){
+            return 1;
+        }else{
+            return -1;
+        }
+    }
+
+    public int acceptFaculty(int userid, int courseid) {
+        SQLiteDatabase db;
+        db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("courseid",courseid);
+        cv.put("facultyid",userid);
+        long status= db.insert("facultytocourses",null,cv);
+        db.close();
+        if(status > 0){
+            db = this.getWritableDatabase();
+
+            status= db.delete("approvals","facultyid= \""+userid+"\" and courseid= \""+courseid+"\"", null);
+            db.close();
+            
+            return 1;
+        }else{
+            return -1;
+        }
+        
+    }
+
+    public int deleteCourse(int courseid) {
+        SQLiteDatabase db;
+        db = this.getWritableDatabase();
+        long status= db.delete("courses","id= \""+courseid+"\"", null);
+        db.close();
+        if(status > 0){
+            return 1;
+        }else{
+            return -1;
+        }
+    }
+
+    public int addAnnouncement(int courseid, String announce) {
+        SQLiteDatabase db;
+        db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("courseid", courseid);
+        cv.put("info",announce);
+        cv.put("author",0);
+        long status= db.insert("announcement",null,cv);
         db.close();
         if(status > 0){
             return 1;

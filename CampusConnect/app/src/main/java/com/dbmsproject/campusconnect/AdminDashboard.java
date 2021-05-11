@@ -1,6 +1,7 @@
 package com.dbmsproject.campusconnect;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -22,42 +23,62 @@ public class AdminDashboard extends AppCompatActivity {
 
 
     Button btn_ad_allc,btn_ad_allusers,btn_ad_apv;
-    ListView lv_items;
-    FloatingActionButton fbtn_add;
+    RecyclerView lv_items;
+    FloatingActionButton fbtn_add,fbtn_announce;
+    int purpose;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_dashboard);
+
+        recyclerView=findViewById(R.id.rv_ad_list);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+
         btn_ad_allc=findViewById(R.id.btn_ad_allc);
         btn_ad_allusers=findViewById(R.id.btn_ad_allusers);
         btn_ad_apv=findViewById(R.id.btn_ad_apv);
         fbtn_add= findViewById(R.id.fbtn_add);
-        lv_items=findViewById(R.id.lv_items);
+
+        lv_items=findViewById(R.id.rv_ad_list);
+        DatabaseHelper databaseHelper = new DatabaseHelper(AdminDashboard.this);
+        List<Ousers> annList=databaseHelper.allUsersforAdmin();
+        myAdapter = new AdminDashAdapter(annList,0);
+        recyclerView.setAdapter(myAdapter);
+
+
+
+
         btn_ad_allusers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseHelper dbhelper= new DatabaseHelper(getApplicationContext());
-                List<Ousers> userlist= dbhelper.allUsers();
-                ArrayAdapter useradapter= new ArrayAdapter<Ousers>(AdminDashboard.this,android.R.layout.simple_expandable_list_item_1,userlist);
-                lv_items.setAdapter(useradapter);
+                purpose=0;
+                DatabaseHelper databaseHelper = new DatabaseHelper(AdminDashboard.this);
+                List<Ousers> annList=databaseHelper.allUsersforAdmin();
+                myAdapter = new AdminDashAdapter(annList,purpose);
+                recyclerView.setAdapter(myAdapter);
             }
         });
         btn_ad_allc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseHelper dbhelper= new DatabaseHelper(getApplicationContext());
-                List<OCourses> courseslist= dbhelper.getAllCourses();
-                ArrayAdapter coursesadapter= new ArrayAdapter<OCourses>(AdminDashboard.this,android.R.layout.simple_expandable_list_item_1,courseslist);
-                lv_items.setAdapter(coursesadapter);
+                purpose =1;
+                DatabaseHelper databaseHelper = new DatabaseHelper(AdminDashboard.this);
+                List<OCourses> annList=databaseHelper.allCoursesforAdmin();
+                myAdapter = new AdminDashAdapter(annList,purpose);
+                recyclerView.setAdapter(myAdapter);
             }
         });
         btn_ad_apv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                purpose =2;
                 DatabaseHelper dbhelper= new DatabaseHelper(getApplicationContext());
-                List<Ousers> usersList= dbhelper.getAllApprovals();
-                ArrayAdapter useradapter= new ArrayAdapter<Ousers>(AdminDashboard.this,android.R.layout.simple_list_item_activated_1, usersList);
-                lv_items.setAdapter(useradapter);
+                List<Approval> approvalist= dbhelper.getAllApprovals();
+                myAdapter = new AdminDashAdapter(approvalist,purpose);
+                recyclerView.setAdapter(myAdapter);
 
             }
         });
@@ -67,6 +88,8 @@ public class AdminDashboard extends AppCompatActivity {
                 startActivity(new Intent(AdminDashboard.this,addNewCourse.class));
             }
         });
+
+
 
 
 

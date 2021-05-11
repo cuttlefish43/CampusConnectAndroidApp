@@ -35,19 +35,6 @@
         app:layout_constraintStart_toEndOf="@+id/btn_ad_allusers"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ListView
-        android:id="@+id/lv_items"
-        android:layout_width="359dp"
-        android:layout_height="457dp"
-        android:layout_marginTop="16dp"
-        android:background="#CAC4C7"
-        android:cacheColorHint="#680303"
-        android:headerDividersEnabled="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_ad_allusers" />
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fbtn_add"
         android:layout_width="wrap_content"
@@ -59,4 +46,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_input_add" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_ad_list"
+        android:layout_width="355dp"
+        android:layout_height="448dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_ad_allusers" />
 </androidx.constraintlayout.widget.ConstraintLayout>

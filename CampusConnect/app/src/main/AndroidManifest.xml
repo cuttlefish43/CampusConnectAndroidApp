@@ -9,9 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CampusConnect">
-        <activity android:name=".UploadMaterial"
+        <activity android:name=".Adannounce"
+            android:label="Announce"
+            android:theme="@android:style/Theme.Material.Light.Dialog" />
+        <activity
+            android:name=".UploadMaterial"
             android:label="Upload"
-            android:theme="@android:style/Theme.Material.Light.Dialog"/>
+            android:theme="@android:style/Theme.Material.Light.Dialog" />
         <activity
             android:name=".StudentsendMessage"
             android:label="Type Message"
