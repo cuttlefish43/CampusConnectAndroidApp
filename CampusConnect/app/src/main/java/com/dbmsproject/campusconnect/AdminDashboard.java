@@ -1,6 +1,7 @@
 package com.dbmsproject.campusconnect;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 public class AdminDashboard extends AppCompatActivity {
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter myAdapter;
+    private RecyclerView.LayoutManager layoutManager;
+
+
     Button btn_ad_allc,btn_ad_allusers,btn_ad_apv;
     ListView lv_items;
     FloatingActionButton fbtn_add;

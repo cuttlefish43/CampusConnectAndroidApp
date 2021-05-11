@@ -31,12 +31,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL((sqlstatment));
         sqlstatment = "create table if not exists facultytocourses(id integer primary key autoincrement,facultyid integer not null, courseid integer not null,foreign key(facultyid) references usertable(id) on delete cascade,foreign key(courseid) references courses(id) on delete cascade)";
         db.execSQL(sqlstatment);
-        sqlstatment = "create table if not exists announcement(id integer primary key autoincrement, postdate timestamp, courseid integer not null, info text(400),author integer not null, foreign key(courseid) references courses(id) on delete cascade,foreign key(author) references usertable(id) on delete cascade)";
+        sqlstatment = "create table if not exists announcement(id integer primary key autoincrement, postdate datetime default current_timestamp, courseid integer not null, info text(400),author integer not null, foreign key(courseid) references courses(id) on delete cascade,foreign key(author) references usertable(id) on delete cascade)";
         db.execSQL(sqlstatment);
-        sqlstatment = "create table if not exists materials(id integer primary key autoincrement, postdate timestamp, courseid integer not null, filelinks varchar(200), foreign key(courseid) references courses(id) on delete cascade)";
+        sqlstatment = "create table if not exists materials(id integer primary key autoincrement,  courseid integer not null, filelinks varchar(200), foreign key(courseid) references courses(id) on delete cascade)";
         db.execSQL(sqlstatment);
         sqlstatment = "create table if not exists approvals(id integer primary key autoincrement, facultyid integer not null, courseid integer not null, foreign key(facultyid) references usertable(id) on delete cascade,foreign key(courseid) references courses(id) on delete cascade)";
         db.execSQL(sqlstatment);
+        sqlstatment = "create table if not exists disscussion(id integer primary key autoincrement, userid integer not null, message text(80), courseid integer not null, foreign key(userid) references usertable(id) on delete cascade,foreign key(courseid) references courses(id) on delete cascade)";
+        db.execSQL(sqlstatment);
+
 
     }
 
@@ -108,6 +111,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cu.close();
         db.close();
         return -1;
+    }
+    public OCourses getCourse(int courseid){
+        SQLiteDatabase db;
+        OCourses obj = new OCourses();
+        db= this.getReadableDatabase();
+        String sqlstatment2 ="select * from courses where id = \"" +courseid+"\""; //for testing changed table
+        Cursor cursor;
+        cursor=db.rawQuery(sqlstatment2,null);
+
+        if(cursor.moveToFirst()){
+
+                int id = cursor.getInt(0);
+                String coursename = cursor.getString(1);
+                String description = cursor.getString(2);
+                //System.out.println("Success"+coursename+" "+description+" ");
+                obj= new OCourses(id,coursename,description);
+        }
+        //System.out.println("Success ");
+        cursor.close();
+        db.close();
+        return obj;
+
     }
     /*Course adder methods*/
     public List<OCourses> getAllCourses(){
@@ -336,5 +361,97 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         }
         return pendingList;
+    }
+
+    public List<Oothers> getAllAnnouncements(int userid, int courseid) {
+        List<Oothers> annLists= new ArrayList<>();
+        SQLiteDatabase db;
+        db = this.getReadableDatabase();
+        Cursor cursor;
+        String sqlstatment7="select * from announcement where courseid = \""+courseid+"\" order by id desc";
+        cursor = db.rawQuery(sqlstatment7,null);
+        if(cursor.moveToFirst()){
+            do{
+                int titleid=cursor.getInt(0);
+                String titledate= cursor.getString(1);
+                String descp= cursor.getString(3);
+                String title= "No:"+Integer.toString(titleid) + " At: " + titledate;
+                Oothers anouncement= new Oothers(title,descp);
+                annLists.add(anouncement);
+            }while(cursor.moveToNext());
+        }
+        return annLists;
+    }
+
+    public List<Oothers> getAllMaterials(int userid, int courseid) {
+        List<Oothers> annLists= new ArrayList<>();
+        SQLiteDatabase db;
+        db = this.getReadableDatabase();
+        Cursor cursor;
+        String sqlstatment7="select * from materials where courseid = \""+courseid+"\" order by id desc";
+        cursor = db.rawQuery(sqlstatment7,null);
+        if(cursor.moveToFirst()){
+            do{
+
+                String title= "Materail id: "+cursor.getString(0);
+                String descp= cursor.getString(3);
+
+                Oothers material= new Oothers(title,descp);
+                annLists.add(material);
+            }while(cursor.moveToNext());
+        }
+        return annLists;
+
+    }
+
+    public List<Oothers> getAlldisscussions(int userid, int courseid) {
+        List<Oothers> annLists= new ArrayList<>();
+        SQLiteDatabase db;
+        db = this.getReadableDatabase();
+        Cursor cursor;
+        String sqlstatment7="select * from disscussion where courseid = \""+courseid+"\" order by id desc";
+        cursor = db.rawQuery(sqlstatment7,null);
+        if(cursor.moveToFirst()){
+            do{
+                String title= "User id: "+cursor.getString(1);
+                String descp= cursor.getString(2);
+                Oothers discuss= new Oothers(title,descp);
+                annLists.add(discuss);
+            }while(cursor.moveToNext());
+        }
+        return annLists;
+    }
+
+
+
+    public int sendMessage(int userid, int courseid, String message) {
+        SQLiteDatabase db;
+        db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("userid", userid);
+        cv.put("message",message);
+        cv.put("courseid",courseid);
+        long status= db.insert("disscussion",null,cv);
+        db.close();
+        if(status > 0){
+            return 1;
+        }else{
+            return -1;
+        }
+    }
+
+    public int addMaterial(int courseid, String uploads) {
+        SQLiteDatabase db;
+        db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("courseid",courseid);
+        cv.put("filelinks",uploads);
+        long status= db.insert("materials",null,cv);
+        db.close();
+        if(status > 0){
+            return 1;
+        }else{
+            return -1;
+        }
     }
 }

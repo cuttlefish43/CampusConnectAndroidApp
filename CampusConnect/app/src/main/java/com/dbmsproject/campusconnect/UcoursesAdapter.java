@@ -2,7 +2,6 @@ package com.dbmsproject.campusconnect;
 
 import android.content.Context;
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class RvAdapter extends RecyclerView.Adapter<RvAdapter.ViewHolder> {
+public class UcoursesAdapter extends RecyclerView.Adapter<UcoursesAdapter.ViewHolder> {
     List<OCourses> CoursesList;
     int userid;
     int courseid;
 
-    public RvAdapter(List<OCourses> coursesList, CurrentUser currentUser) {
+
+    public UcoursesAdapter(List<OCourses> coursesList, CurrentUser currentUser) {
         CoursesList = coursesList;
         userid= currentUser.getId(); //userid for his relation with course i.e is registered or not and isstudent or faculty
 
@@ -54,16 +54,16 @@ public class RvAdapter extends RecyclerView.Adapter<RvAdapter.ViewHolder> {
                 int s_reg_status=dbhelper.checkStudenttoCourse(userid,courseid);
                 if(s_reg_status == 1) {
                     Intent newintent = new Intent(context, StudentDashBoard.class);
-                    newintent.putExtra("userid0",userid);
-                    newintent.putExtra("courseid0",courseid);
+                    newintent.putExtra("userid",userid);
+                    newintent.putExtra("courseid",courseid);
                     context.startActivity(newintent);
 
                 }else{
                     int f_reg_status=dbhelper.checkFacultytoCourse(userid,courseid);
                     if(f_reg_status == 1){
                         Intent newintent2= new Intent(context, FacultyDashboard.class);
-                        newintent2.putExtra("userid1",userid);
-                        newintent2.putExtra("courseid1",courseid);
+                        newintent2.putExtra("userid",userid);
+                        newintent2.putExtra("courseid",courseid);
                         context.startActivity(newintent2);
 
                     }else if( f_reg_status == -1 ){
@@ -103,11 +103,12 @@ public class RvAdapter extends RecyclerView.Adapter<RvAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_cname;
         View courselist;
-        ImageView imv_info;
+        ImageView imv_info,asy;
         //Button btn_cregister;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+
             tv_cname= itemView.findViewById(R.id.tv_cname);
             courselist= itemView.findViewById(R.id.courselist);
             imv_info=itemView.findViewById(R.id.imv_info);

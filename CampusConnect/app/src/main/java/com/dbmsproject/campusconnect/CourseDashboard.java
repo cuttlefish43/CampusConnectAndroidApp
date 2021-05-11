@@ -8,13 +8,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.List;
 
 public class CourseDashboard extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter myAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    Button btn_regcourses,btn_allcourses;
+    FloatingActionButton btn_regcourses,btn_allcourses;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.setTitle("Course Dashboard");
@@ -36,7 +38,7 @@ public class CourseDashboard extends AppCompatActivity {
             List<OCourses> CoursesList = dbhelper.getAllCourses();
             System.out.println(CoursesList.size());
             //Toast.makeText(this, CoursesList.size(), Toast.LENGTH_SHORT).show();
-            myAdapter = new RvAdapter(CoursesList,currentUser); //has parameter - a list, eg: MyAdapter(numberList);
+            myAdapter = new UcoursesAdapter(CoursesList,currentUser); //has parameter - a list, eg: MyAdapter(numberList);
             recyclerView.setAdapter(myAdapter);
         }catch (Exception e){
             System.out.println("receive error ");
@@ -47,9 +49,9 @@ public class CourseDashboard extends AppCompatActivity {
                 try{
                     DatabaseHelper dbhelper = new DatabaseHelper(getApplicationContext());
                     List<OCourses> CoursesList = dbhelper.getRegCourses( currentUser.id); // registered courses for current id
-                    System.out.println(CoursesList.size());
+                    System.out.println(CoursesList.size()); //for dev testing
                     //Toast.makeText(this, CoursesList.size(), Toast.LENGTH_SHORT).show();
-                    myAdapter = new RvAdapter(CoursesList, currentUser); //has parameter - a list, eg: MyAdapter(numberList);
+                    myAdapter = new UcoursesAdapter(CoursesList, currentUser); //has parameter - a list, eg: MyAdapter(numberList);
                     recyclerView.setAdapter(myAdapter);
                 }catch (Exception e){
                     System.out.println("receive error ");
@@ -63,9 +65,9 @@ public class CourseDashboard extends AppCompatActivity {
                 try{
                     DatabaseHelper dbhelper = new DatabaseHelper(getApplicationContext());
                     List<OCourses> CoursesList = dbhelper.getAllCourses();
-                    System.out.println(CoursesList.size());
+                    System.out.println(CoursesList.size()); //for dev testing
                     //Toast.makeText(this, CoursesList.size(), Toast.LENGTH_SHORT).show();
-                    myAdapter = new RvAdapter(CoursesList, currentUser); //has parameter - a list, eg: MyAdapter(numberList);
+                    myAdapter = new UcoursesAdapter(CoursesList, currentUser); //has parameter - a list, eg: MyAdapter(numberList);
                     recyclerView.setAdapter(myAdapter);
                 }catch (Exception e){
                     System.out.println("receive error ");
