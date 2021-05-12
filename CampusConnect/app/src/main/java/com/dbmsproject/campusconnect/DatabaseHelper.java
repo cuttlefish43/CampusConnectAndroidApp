@@ -282,26 +282,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public int checkStudenttoCourse(int uid, int cid) {
         SQLiteDatabase db;
         db= this.getReadableDatabase();
-        String sqlstatment5="select count(*) from studenttocourses where studentid = \"" + uid + "\" and courseid = \"" + cid + "\"";
         Cursor cu;
         int count=0;
-        cu= db.rawQuery(sqlstatment5,null);
-        if(cu.moveToFirst()){
-            count=cu.getInt(0);
-            System.out.println("This is studenttocourse count"+count);
+        String sqlstatment5;
+        sqlstatment5="select count(*) from approvals where facultyid =\"" +uid+ "\" and courseid = \"" + cid+ "\"";
+        cu=db.rawQuery(sqlstatment5,null);
+        if(cu.moveToFirst()) {
+            count = cu.getInt(0);
+            System.out.println("This is approval count" + count);
             cu.close();
             db.close();
-
-            if(count >=1){
-                return 1; //user is registered as student
+            if(count >0 ){
+                return 5;
             }else{
-                return -1;
+                db= this.getReadableDatabase();
+                sqlstatment5="select count(*) from studenttocourses where studentid = \"" + uid + "\" and courseid = \"" + cid + "\"";
+                int newcount=0;
+                cu= db.rawQuery(sqlstatment5,null);
+                if(cu.moveToFirst()){
+
+                    newcount=cu.getInt(0);
+                    System.out.println("This is studenttocourse count"+count);
+                    cu.close();
+                    db.close();
+
+                    if(newcount > 0){
+                        return 1; //user is registered as student
+                    }else{
+                        return -1;
+                    }
+                }
             }
-        }else{
-            cu.close();
-            db.close();
-            return 0;
+
         }
+
+        cu.close();
+        db.close();
+        return -1;
     }
 
     public int checkFacultytoCourse(int userid, int courseid) {

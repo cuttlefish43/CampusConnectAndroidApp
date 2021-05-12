@@ -59,6 +59,8 @@ public class UcoursesAdapter extends RecyclerView.Adapter<UcoursesAdapter.ViewHo
                     newintent.putExtra("courseid",courseid);
                     context.startActivity(newintent);
 
+                }else if(s_reg_status ==5 ){
+                    Toast.makeText(context, "Cannot register this course till as faculty registration approval is pending ", Toast.LENGTH_SHORT).show();
                 }else{
                     int f_reg_status=dbhelper.checkFacultytoCourse(userid,courseid);
                     if(f_reg_status == 1){
