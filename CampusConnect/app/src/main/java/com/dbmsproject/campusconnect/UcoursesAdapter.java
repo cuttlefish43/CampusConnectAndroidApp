@@ -38,7 +38,7 @@ public class UcoursesAdapter extends RecyclerView.Adapter<UcoursesAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.tv_cname.setText(CoursesList.get(position).getCoursename());
-        courseid=CoursesList.get(position).getCourseid();
+        //courseid=CoursesList.get(position).getCourseid(); // this was a bug due to which users could'nt register on more than one course.
         final Context context = holder.courselist.getContext();
         holder.courselist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +50,7 @@ public class UcoursesAdapter extends RecyclerView.Adapter<UcoursesAdapter.ViewHo
 
                  */
                 // now start checking if user is registered to that course or not // also only userid and courseid matters
+                courseid=CoursesList.get(position).getCourseid();
                 DatabaseHelper dbhelper= new DatabaseHelper(context);
                 int s_reg_status=dbhelper.checkStudenttoCourse(userid,courseid);
                 if(s_reg_status == 1) {
