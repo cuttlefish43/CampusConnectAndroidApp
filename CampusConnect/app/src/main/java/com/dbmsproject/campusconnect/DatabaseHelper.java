@@ -12,6 +12,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+
+    /*
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        if(!db.isReadOnly()){
+            db.execSQL("PRAGMA foreign_keys=ON;");
+            db.setForeignKeyConstraintsEnabled(true);
+
+        }
+
+    }*/
+
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+        db.setForeignKeyConstraintsEnabled(true);
+    }
+
     public DatabaseHelper(@Nullable Context context) {
         super(context, "campusconnect.db", null, 1);
     }
@@ -20,7 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
+        //db.setForeignKeyConstraintsEnabled(true);
         sqlstatment = "create table if not exists usertable(id integer primary key autoincrement, username varchar(40),useremail varchar(30),userpassword varchar(20))";
         db.execSQL(sqlstatment);
         //sqlstatment = "create table if not exists faculty(id integer primary key autoincrement, facultyname varchar(40),facultyemail varchar(30),facultypassword varchar(20))";
@@ -31,7 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL((sqlstatment));
         sqlstatment = "create table if not exists facultytocourses(id integer primary key autoincrement,facultyid integer not null, courseid integer not null,foreign key(facultyid) references usertable(id) on delete cascade,foreign key(courseid) references courses(id) on delete cascade)";
         db.execSQL(sqlstatment);
-        sqlstatment = "create table if not exists announcement(id integer primary key autoincrement, postdate datetime default current_timestamp, courseid integer not null, info text(400),author integer not null, foreign key(courseid) references courses(id) on delete cascade,foreign key(author) references usertable(id) on delete cascade)";
+        sqlstatment = "create table if not exists announcement(id integer primary key autoincrement, postdate datetime default current_timestamp, courseid integer not null, info text(400), foreign key(courseid) references courses(id) on delete cascade)";
         db.execSQL(sqlstatment);
         sqlstatment = "create table if not exists materials(id integer primary key autoincrement,  courseid integer not null, filelinks varchar(200), foreign key(courseid) references courses(id) on delete cascade)";
         db.execSQL(sqlstatment);
@@ -45,6 +63,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
 
     }
     /* user login  methods*/
@@ -573,7 +592,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put("courseid", courseid);
         cv.put("info",announce);
-        cv.put("author",0);
+
         long status= db.insert("announcement",null,cv);
         db.close();
         if(status > 0){
