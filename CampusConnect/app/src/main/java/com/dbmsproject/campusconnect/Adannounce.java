@@ -35,11 +35,14 @@ public class Adannounce extends Activity {
                     }else{
                         Toast.makeText(Adannounce.this, "Failure", Toast.LENGTH_SHORT).show();
                     }
+                    startActivity(new Intent(Adannounce.this,AdminDashboard.class));
+                    finish();
                 }
             });
 
 
         }
+
         //finish();
     }
 

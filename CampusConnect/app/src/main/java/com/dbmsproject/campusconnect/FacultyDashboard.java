@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -17,7 +18,7 @@ public class FacultyDashboard extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter myAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    FloatingActionButton fbtn_announcements,fbtn_materials,fbtn_disscuss, fbtn_newmessage;
+    FloatingActionButton fbtn_announcements,fbtn_materials,fbtn_disscuss, fbtn_newmessage,fbtn_testnotify;
     TextView tv_sctitle, tv_sc_des;
     int userid;
     int courseid;
@@ -28,6 +29,7 @@ public class FacultyDashboard extends AppCompatActivity {
         setContentView(R.layout.activity_faculty_dashboard);
         tv_sctitle= findViewById(R.id.tv_sctitle);
         tv_sc_des = findViewById(R.id.tv_sc_des);
+        fbtn_testnotify= findViewById(R.id.fbtn_testnotify);
         fbtn_announcements=findViewById(R.id.fbtn_fannouncements);
         fbtn_disscuss=findViewById(R.id.fbtn_fdisscuss);
         fbtn_materials=findViewById(R.id.fbtn_fmaterials);
@@ -94,6 +96,32 @@ public class FacultyDashboard extends AppCompatActivity {
 
             }
         });
+
+        // not a list type
+        fbtn_testnotify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseHelper databaseHelper1 = new DatabaseHelper(FacultyDashboard.this);
+                String [] Studentemails = databaseHelper1.getStudentEmails(courseid).toArray(new String[0]);
+                /*
+                for(int x=0;x<Studentemails.length;x++){
+                    System.out.println(Studentemails[x]);
+                }
+
+                 */
+                ;
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse("mailto:"));
+                intent.putExtra(Intent.EXTRA_EMAIL,Studentemails);
+                intent.putExtra(Intent.EXTRA_SUBJECT,"course"+ courseid+" Test");
+                intent.putExtra(Intent.EXTRA_TEXT,"Tomorrow is 1 hour test for the course. Don't miss.");
+                if(intent.resolveActivity(getPackageManager()) != null){
+                    startActivity(intent);
+                }
+
+            }
+        });
+
 
 
     }

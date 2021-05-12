@@ -2,17 +2,14 @@ package com.dbmsproject.campusconnect;
 
 import android.content.Context;
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -100,7 +97,7 @@ public class AdminDashAdapter extends RecyclerView.Adapter<AdminDashAdapter.View
             holder.id1.setText(Integer.toString(Approvlist.get(position).getUserid()));
             holder.id2.setText(Integer.toString(Approvlist.get(position).getCourseid()));
             holder.title1.setText(Approvlist.get(position).getUsername());
-            holder.title2.setText(Approvlist.get(position).getCourseid());
+            holder.title2.setText(Approvlist.get(position).getCoursename());
             holder.imv_del.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -146,15 +143,16 @@ public class AdminDashAdapter extends RecyclerView.Adapter<AdminDashAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView id1,id2,title1,title2;
-        ImageView imv_del,imv_edit;
+        ImageView imv_del,imv_edit,imv_accept;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            imv_accept= itemView.findViewById(R.id.imv_accept);
             id1=itemView.findViewById(R.id.tv_id);
             id2=itemView.findViewById(R.id.tv_id2);
             title1=itemView.findViewById(R.id.tv_objtitle);
             title2=itemView.findViewById(R.id.tv_objtitle2);
             imv_del=itemView.findViewById(R.id.imv_del);
-            imv_edit=itemView.findViewById(R.id.imv_edit);
+            imv_edit=itemView.findViewById(R.id.imv_accept);
 
         }
     }

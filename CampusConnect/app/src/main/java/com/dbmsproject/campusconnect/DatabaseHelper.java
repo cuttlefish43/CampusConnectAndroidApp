@@ -361,6 +361,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }while(cursor.moveToNext());
 
         }
+        cursor.close();
+        db.close();
         return pendingList;
     }
 
@@ -381,6 +383,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 annLists.add(anouncement);
             }while(cursor.moveToNext());
         }
+        cursor.close();
+        db.close();
         return annLists;
     }
 
@@ -394,13 +398,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(cursor.moveToFirst()){
             do{
 
-                String title= "Materail id: "+cursor.getString(0);
-                String descp= cursor.getString(3);
+                String title= "Materail id: "+cursor.getInt(0);
+                String descp= cursor.getString(2);
 
                 Oothers material= new Oothers(title,descp);
                 annLists.add(material);
             }while(cursor.moveToNext());
         }
+        cursor.close();
+        db.close();
         return annLists;
 
     }
@@ -420,6 +426,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 annLists.add(discuss);
             }while(cursor.moveToNext());
         }
+        cursor.close();
+        db.close();
         return annLists;
     }
 
@@ -573,5 +581,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }else{
             return -1;
         }
+    }
+
+    public List<String> getStudentEmails(int courseid) {
+        SQLiteDatabase db;
+        List<String> emaillist= new ArrayList<>();
+        db = this.getReadableDatabase();
+        Cursor cursor;
+        String sqlstatment8= "select useremail from usertable where id in (select studentid from studenttocourses where courseid = \""+courseid+"\")";
+        cursor = db.rawQuery(sqlstatment8,null);
+        if(cursor.moveToFirst()){
+            do{
+                String semail= cursor.getString(0);
+                emaillist.add(semail);
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return emaillist;
     }
 }

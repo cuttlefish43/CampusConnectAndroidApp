@@ -34,6 +34,7 @@ public class StudentsendMessage extends Activity {
                     }else{
                         Toast.makeText(StudentsendMessage.this, "Error sending Message", Toast.LENGTH_SHORT).show();
                     }
+
                     finish();
             }
         });
